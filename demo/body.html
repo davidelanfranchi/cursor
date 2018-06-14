@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Cursor</title>
+
+  <style>
+
+    /* Cursor */
+
+    .js-has-cursor{
+      cursor: none!important;
+    }
+    .cursor {
+      pointer-events: none;
+
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 100;
+
+      transition: transform .4s cubic-bezier(0, 0.96, 0.26, 0.99);;
+    }
+    .cursor__inner{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate3d(-50%, -50%, 0);  
+      
+      width: 20px;
+      height: 20px;
+      background-color: steelblue;
+      border-radius: 50%;
+
+      transition: all .3s;
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .cursor[data-state="state1"] .cursor__inner{
+      background-color: lightgreen;
+    }
+    .cursor[data-state="state2"] .cursor__inner{
+      background-color: khaki;
+      transform: scale(2);
+      transition: all .3s cubic-bezier(0, 0.96, 0.23, 1.36);
+    }
+    .cursor[data-state="state2"][data-activity="holding"] .cursor__inner{
+      transform: scale(3);
+    }
+    .cursor[data-state="state3"] .cursor__inner{
+      background-color: tomato;
+      transform: scale(3);
+      transition: all .3s cubic-bezier(0, 0.96, 0.23, 1.36);
+    }
+    .cursor[data-state="state4"] .cursor__inner{
+      background-color: burlywood;
+    }
+
+    .cursor[data-hiding] .cursor__inner{
+      transform: scale(0);
+    }
+
+    /* Elements */
+    
+    html {
+      box-sizing: border-box;
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+
+     html, body{
+      margin: 0;
+      height: 100%;
+    }
+
+    .wrapper{
+      height: 100%;
+      padding: 10%;
+
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .box{
+      border: 1px solid steelblue;
+      width: 50%;
+      height: 50%;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div class="wrapper" data-cursor="default">
+    <div class="box" data-cursor="state1"></div>
+    <div class="box" data-cursor="state2"></div>
+    <div class="box" data-cursor="state3"></div>
+    <div class="box" data-cursor="state4"></div>
+  </div>
+
+  <script src="../dist/cursor.umd.js"></script>
+  <script>
+    const cursor = new Cursor();
+  </script>
+
+</body>
+
+</html>
