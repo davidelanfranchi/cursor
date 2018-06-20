@@ -13,13 +13,11 @@ var Cursor = function () {
     // Default options
 
     var defaults = {
-      name: "cursor",
-      mousePosition: { x: 0, y: 0 },
       container: document.body,
-      containerPosition: { x: 0, y: 0 },
       elementClass: "cursor",
       innerElementClass: "cursor__inner",
-      defaultType: "default"
+      defaultType: "default",
+      innerMarkup: ""
     };
 
     // Override with initialization options
@@ -28,6 +26,19 @@ var Cursor = function () {
     Object.keys(defaults).forEach(function (prop) {
       _this[prop] = opts[prop];
     });
+
+    // Properties
+    this.name = "cursor";
+    this.mousePosition = { x: 0, y: 0 };
+    if (this.innerMarkup === "") {
+      this.innerMarkup = "<div class=\"" + this.innerElementClass + "\"></div>";
+    }
+
+    // Return on touch devices
+
+    if ("ontouchstart" in window || window.DocumentTouch && document instanceof DocumentTouch) {
+      return false;
+    }
 
     // Utility
 
@@ -41,7 +52,7 @@ var Cursor = function () {
   _createClass(Cursor, [{
     key: "init",
     value: function init() {
-      // Add container class - use it to hide real cursor
+      // Add container class - can be used to hide real cursor
 
       this.container.classList.add("js-has-cursor");
 
@@ -49,15 +60,17 @@ var Cursor = function () {
 
       this.element = document.createElement("div");
       this.element.classList.add(this.elementClass);
+      this.element.innerHTML = this.innerMarkup;
+
       this.element.setAttribute("data-cursor-type", this.defaultType);
-      this.element.innerHTML = "<div class=\"" + this.innerElementClass + "\"></div>";
+      this.element.setAttribute("data-cursor-hiding", "");
 
       this.container.appendChild(this.element);
 
       // Listen for events to modify cursor
 
       this.setMousePosition = this.setMousePosition.bind(this);
-      window.addEventListener("mousemove", this.setMousePosition, false);
+      this.container.addEventListener("mousemove", this.setMousePosition, false);
 
       // Hovering elements
 
@@ -102,18 +115,13 @@ var Cursor = function () {
   }, {
     key: "setMousePosition",
     value: function setMousePosition(e) {
-      this.updateContainerPosition();
-
-      this.mousePosition.x = e.clientX - this.containerPosition.x;
-      this.mousePosition.y = e.clientY - this.containerPosition.y;
-    }
-  }, {
-    key: "updateContainerPosition",
-    value: function updateContainerPosition() {
-      var el = this.container;
-      console.log(el.clientTop);
-      this.containerPosition.x = el.offsetLeft - el.scrollLeft + el.clientLeft;
-      this.containerPosition.y = el.offsetTop - el.scrollTop + el.clientTop;
+      if (this.container === document.body) {
+        this.mousePosition.x = e.clientX;
+        this.mousePosition.y = e.clientY;
+      } else {
+        this.mousePosition.x = e.offsetX;
+        this.mousePosition.y = e.offsetY;
+      }
     }
   }, {
     key: "animate",
@@ -134,7 +142,12 @@ var Cursor = function () {
   }, {
     key: "onMouseOut",
     value: function onMouseOut(e) {
+      // Out of the window
       if (e.relatedTarget === null) {
+        this.element.setAttribute("data-cursor-hiding", "");
+      }
+      // Out of the container
+      if (e.target === this.container) {
         this.element.setAttribute("data-cursor-hiding", "");
       }
     }
