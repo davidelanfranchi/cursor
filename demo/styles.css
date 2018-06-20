@@ -1,0 +1,93 @@
+/* Cursor styles example */
+
+.js-has-cursor {
+  cursor: none !important;
+}
+
+.cursor {
+  pointer-events: none;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+
+  transition: transform 0.4s cubic-bezier(0, 0.96, 0.26, 0.99);
+}
+.in-container .cursor {
+  position: absolute;
+}
+
+.cursor__inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+
+  width: 20px;
+  height: 20px;
+  background-color: steelblue;
+  border-radius: 50%;
+
+  transition: all 0.3s;
+  transform: scale(1);
+  opacity: 1;
+}
+
+.cursor[data-cursor-type="type1"] .cursor__inner {
+  background-color: lightgreen;
+}
+.cursor[data-cursor-type="type2"] .cursor__inner {
+  background-color: khaki;
+  transform: scale(2);
+  transition: all 0.3s cubic-bezier(0, 0.96, 0.23, 1.36);
+}
+.cursor[data-cursor-type="type2"][data-cursor-state="holding"] .cursor__inner {
+  transform: scale(3);
+}
+.cursor[data-cursor-type="type3"] .cursor__inner {
+  background-color: tomato;
+  transform: scale(3);
+  transition: all 0.3s cubic-bezier(0, 0.96, 0.23, 1.36);
+}
+.cursor[data-cursor-type="type4"] .cursor__inner {
+  background-color: burlywood;
+  border-radius: 0;
+}
+
+.cursor[data-cursor-hiding] .cursor__inner {
+  transform: scale(0);
+}
+
+[data-cursor-container] {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Demo elements */
+
+html {
+  box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+body {
+  margin: 0;
+}
+
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+.in-container .wrapper {
+  padding: 10%;
+}
+
+.box {
+  border: 1px solid #eeeeee;
+  width: 100%;
+  height: 50vh;
+}

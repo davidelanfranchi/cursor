@@ -8,9 +8,10 @@ export default class Cursor {
       name: "cursor",
       mousePosition: { x: 0, y: 0 },
       container: document.body,
+      containerPosition: { x: 0, y: 0 },
       elementClass: "cursor",
       innerElementClass: "cursor__inner",
-      defaultState: "default"
+      defaultType: "default"
     };
 
     // Override with initialization options
@@ -38,9 +39,8 @@ export default class Cursor {
 
     this.element = document.createElement("div");
     this.element.classList.add(this.elementClass);
-    this.element.innerHTML = `<div class="${
-      this.innerElementClass
-    }" data-state="${this.defaultState}"></div>`;
+    this.element.setAttribute("data-cursor-type", this.defaultType);
+    this.element.innerHTML = `<div class="${this.innerElementClass}"></div>`;
 
     this.container.appendChild(this.element);
 
@@ -86,8 +86,17 @@ export default class Cursor {
   }
 
   setMousePosition(e) {
-    this.mousePosition.x = e.clientX;
-    this.mousePosition.y = e.clientY;
+    this.updateContainerPosition();
+
+    this.mousePosition.x = e.clientX - this.containerPosition.x;
+    this.mousePosition.y = e.clientY - this.containerPosition.y;
+  }
+
+  updateContainerPosition() {
+    let el = this.container;
+    console.log(el.clientTop);
+    this.containerPosition.x = el.offsetLeft - el.scrollLeft + el.clientLeft;
+    this.containerPosition.y = el.offsetTop - el.scrollTop + el.clientTop;
   }
 
   animate() {
@@ -97,30 +106,30 @@ export default class Cursor {
   }
 
   onMouseOver(e) {
-    if (this.element.hasAttribute("data-hiding")) {
-      this.element.removeAttribute("data-hiding");
+    if (this.element.hasAttribute("data-cursor-hiding")) {
+      this.element.removeAttribute("data-cursor-hiding");
     }
 
-    if (e.target.hasAttribute("data-cursor")) {
+    if (e.target.hasAttribute("data-cursor-type")) {
       this.element.setAttribute(
-        "data-state",
-        e.target.getAttribute("data-cursor")
+        "data-cursor-type",
+        e.target.getAttribute("data-cursor-type")
       );
     }
   }
 
   onMouseOut(e) {
     if (e.relatedTarget === null) {
-      this.element.setAttribute("data-hiding", "");
+      this.element.setAttribute("data-cursor-hiding", "");
     }
   }
 
   onMouseDown(e) {
-    this.element.setAttribute("data-activity", "holding");
+    this.element.setAttribute("data-cursor-state", "holding");
   }
 
   onMouseUp(e) {
-    this.element.removeAttribute("data-activity");
+    this.element.removeAttribute("data-cursor-state");
   }
 
   getTransformProperty() {

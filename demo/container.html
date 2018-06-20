@@ -5,24 +5,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Cursor in document.body</title>
+  <title>Cursor in container</title>
 
   <link rel="stylesheet" href="styles.css">
 
 </head>
 
-<body>
+<body class="in-container">
 
-  <div class="wrapper" data-cursor-type="default">
+  <div class="wrapper">
     <div class="box" data-cursor-type="type1"></div>
-    <div class="box" data-cursor-type="type2"></div>
+    <div class="box" data-cursor-container data-cursor-type="type2"></div>
     <div class="box" data-cursor-type="type3"></div>
     <div class="box" data-cursor-type="type4"></div>
   </div>
 
   <script src="../dist/cursor.umd.js"></script>
   <script>
-    const cursor = new Cursor();
+    const containers = document.querySelectorAll('[data-cursor-container]');
+    containers.forEach((element) => {
+      const cursor = new Cursor({
+        container: element
+      });
+    });
+    
   </script>
 
 </body>
